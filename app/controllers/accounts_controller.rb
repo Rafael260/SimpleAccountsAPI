@@ -40,7 +40,7 @@ class AccountsController < ApplicationController
 
   # PUT /accounts/debit/1
   def debit
-    @account = Account.find(params[:id])
+    set_account
     @account.balance -= params[:debit]
     if @account.save
       render json: @account, status: :ok, location: @account
@@ -51,7 +51,7 @@ class AccountsController < ApplicationController
 
   # PUT /accounts/credit/1
   def credit
-    @account = Account.find(params[:id])
+    set_account
     @account.balance += params[:credit]
     if @account.save
       render json: @account, status: :ok, location: @account

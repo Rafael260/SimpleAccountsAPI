@@ -1,10 +1,9 @@
 class PeopleController < ApplicationController
-  before_action :set_person, only: [:show, :update, :destroy]
+  before_action :set_person, only: %i[show update destroy]
 
   # GET /people
   def index
     @people = Person.all
-
     render json: @people
   end
 
@@ -15,13 +14,10 @@ class PeopleController < ApplicationController
 
   # POST /people
   def create
-    @person = Person.new(person_params)
-
-    if @person.save
-      render json: @person, status: :created, location: @person
-    else
-      render json: @person.errors, status: :unprocessable_entity
-    end
+    command_person_create = Command::Person::Create.new(person_params)
+    define_behavior_to_broadcast(command_person_create, :successfully, :created)
+    define_behavior_to_broadcast(command_person_create, :failed, :bad_request)
+    command_person_create.call
   end
 
   # PATCH/PUT /people/1
@@ -39,13 +35,14 @@ class PeopleController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_person
-      @person = Person.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def person_params
-      params.require(:person).permit(:name, :reason, :cnpj)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_person
+    @person = Person.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def person_params
+    params.permit(:name, :reason, :cnpj)
+  end
 end

@@ -1,0 +1,25 @@
+AllCops:
+  TargetRubyVersion: 2.5.0
+  Exclude:
+    - 'spec/fixtures/**/*'
+    - 'lib/danger/plugin_support/plugin_parser.rb'
+    - 'config/**/*'
+    - 'bin/**/*'
+    - 'db/**/*'
+    - 'Gemfile'
+    - 'Gemfile.lock'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Layout/TrailingBlankLines:
+  Enabled: false

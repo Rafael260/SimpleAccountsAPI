@@ -5,30 +5,32 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     @account = accounts(:one)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get accounts_url, as: :json
     assert_response :success
   end
 
-  test "should create account" do
+  test 'should create account' do
     assert_difference('Account.count') do
-      post accounts_url, params: { account: { name: @account.name, person_id: @account.person_id } }, as: :json
+      post accounts_url, params:
+      { account: { name: @account.name, person_id: @account.person_id } }, as: :json
     end
 
     assert_response 201
   end
 
-  test "should show account" do
+  test 'should show account' do
     get account_url(@account), as: :json
     assert_response :success
   end
 
-  test "should update account" do
-    patch account_url(@account), params: { account: { name: @account.name, person_id: @account.person_id } }, as: :json
+  test 'should update account' do
+    patch account_url(@account), params: { account:
+    { name: @account.name, person_id: @account.person_id } }, as: :json
     assert_response 200
   end
 
-  test "should destroy account" do
+  test 'should destroy account' do
     assert_difference('Account.count', -1) do
       delete account_url(@account), as: :json
     end

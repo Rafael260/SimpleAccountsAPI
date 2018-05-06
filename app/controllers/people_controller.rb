@@ -1,20 +1,23 @@
 class PeopleController < ApplicationController
-  before_action :set_person, only: %i[show update destroy]
 
   # GET /people
   def index
-    @people = Person.all
-    render json: @people
+    command_person_list = PersonServices::List.new
+    define_behavior_to_broadcast(command_person_list, :successfully, :ok)
+    command_person_list.call
   end
 
   # GET /people/1
   def show
-    render json: @person
+    command_person_show = PersonServices::Show.new(params)
+    define_behavior_to_broadcast(command_person_show, :successfully, :ok)
+    define_behavior_to_broadcast(command_person_show, :not_found, :not_found)
+    command_person_show.call
   end
 
   # POST /people
   def create
-    command_person_create = Command::Person::Create.new(person_params)
+    command_person_create = PersonServices::Create.new(person_params)
     define_behavior_to_broadcast(command_person_create, :successfully, :created)
     define_behavior_to_broadcast(command_person_create, :failed, :bad_request)
     command_person_create.call
@@ -22,27 +25,26 @@ class PeopleController < ApplicationController
 
   # PATCH/PUT /people/1
   def update
-    if @person.update(person_params)
-      render json: @person
-    else
-      render json: @person.errors, status: :unprocessable_entity
-    end
+    command_person_update = PersonServices::Update.new(person_params)
+    define_behavior_to_broadcast(command_person_update, :successfully, :ok)
+    define_behavior_to_broadcast(command_person_update, :failed, :bad_request)
+    define_behavior_to_broadcast(command_person_update, :not_found, :not_found)
+    command_person_update.call
   end
 
   # DELETE /people/1
   def destroy
-    @person.destroy
+    command_person_destroy = PersonServices::Destroy.new(params)
+    define_behavior_to_broadcast(command_person_destroy, :successfully, :no_content)
+    define_behavior_to_broadcast(command_person_destroy, :failed, :bad_request)
+    define_behavior_to_broadcast(command_person_destroy, :not_found, :not_found)
+    command_person_destroy.call
   end
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_person
-    @person = Person.find(params[:id])
-  end
-
   # Only allow a trusted parameter "white list" through.
   def person_params
-    params.permit(:name, :reason, :cnpj)
+    params.permit(:id, :name, :reason, :cnpj)
   end
 end

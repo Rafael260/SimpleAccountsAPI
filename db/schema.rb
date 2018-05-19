@@ -10,18 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180425012343) do
+ActiveRecord::Schema.define(version: 2018_04_25_012343) do
 
-  create_table "accounts", force: :cascade do |t|
+  create_table "accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
-    t.integer "person_id"
+    t.bigint "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "balance"
     t.index ["person_id"], name: "index_accounts_on_person_id"
   end
 
-  create_table "people", force: :cascade do |t|
+  create_table "people", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "reason"
     t.string "cnpj"
@@ -29,4 +29,5 @@ ActiveRecord::Schema.define(version: 20180425012343) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "accounts", "people"
 end
